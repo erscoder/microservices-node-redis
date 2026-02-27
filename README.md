@@ -1,11 +1,41 @@
-![alt text](./redis-node.jpg)
+![BookShop Architecture](./redis-node.jpg)
 
+# 📚 BookShop Microservices
+
+![Node.js](https://img.shields.io/badge/-Node.js-339933?style=flat-square&logo=node.js&logoColor=white)
+![Redis](https://img.shields.io/badge/-Redis-DC382D?style=flat-square&logo=redis&logoColor=white)
+![Express](https://img.shields.io/badge/-Express-000000?style=flat-square&logo=express&logoColor=white)
 [![Build Status](https://travis-ci.org/wooltar/microservices-node-redis.svg?branch=master)](https://travis-ci.org/wooltar/microservices-node-redis)
-![npm](https://img.shields.io/npm/v/npm.svg)
-# BookShop Microservices
 
-Nodejs application with microservices ARQ. Using Redis to allow the comunication between microservices. 
-When a customer make a order, the stock is updated and the customer balance is updated too, substract book price from customer balance. If customer hasn't enought money, return a error
+**Event-driven microservices architecture** for an online bookshop using **Node.js** + **Redis pub/sub**.
+
+When a customer places an order:
+1. 📦 **Books service** checks stock availability
+2. 💳 **Customers service** validates balance & deducts payment
+3. ✅ Order confirmed if stock + funds available
+4. ❌ Error returned if insufficient stock or money
+
+All communication happens via **Redis pub/sub** — no direct HTTP calls between services.
+
+---
+
+## 🏗️ Architecture
+
+```
+┌─────────────┐         ┌─────────────┐         ┌─────────────┐
+│   Books     │         │   Orders    │         │  Customers  │
+│  Service    │◄────────┤   Service   │────────►│   Service   │
+│  (5544)     │  Redis  │   (8888)    │  Redis  │   (6666)    │
+└─────────────┘  Pub/Sub└─────────────┘  Pub/Sub└─────────────┘
+```
+
+**Benefits:**
+- ✅ **Decoupled** - services don't know about each other
+- ✅ **Scalable** - add more service instances easily
+- ✅ **Resilient** - one service down doesn't crash the system
+- ✅ **Fast** - Redis in-memory messaging
+
+---
 
 ## Books
 
